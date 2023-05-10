@@ -17,6 +17,9 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRoom;
 
+    @Column(nullable = false)
+    private String roomNum;
+
     @ManyToOne
     @JoinColumn(name = "id_building")
     private Building building;

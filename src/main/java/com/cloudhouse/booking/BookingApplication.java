@@ -1,7 +1,8 @@
 package com.cloudhouse.booking;
 
-import com.cloudhouse.booking.repository.RoomRepo;
-import org.slf4j.LoggerFactory;
+import com.cloudhouse.booking.entity.booking.BookingStatus;
+import com.cloudhouse.booking.entity.booking.EBookingStatus;
+import com.cloudhouse.booking.repository.BookingStatusRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,20 +11,17 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @SpringBootApplication
 @EnableJpaRepositories
 @RefreshScope
 @EnableFeignClients
 public class BookingApplication implements CommandLineRunner {
 
-	private RoomRepo roomRepo;
+	BookingStatusRepo bookingStatusRepo;
 
 	@Autowired
-	public BookingApplication(RoomRepo roomRepo) {
-		this.roomRepo = roomRepo;
+	public BookingApplication(BookingStatusRepo bookingStatusRepo) {
+		this.bookingStatusRepo = bookingStatusRepo;
 	}
 
 	public static void main(String[] args) {
@@ -32,9 +30,10 @@ public class BookingApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-
-//		List<Long> ids = new ArrayList<>();
-//		ids.add(1L);
-//		System.out.println(roomRepo.findAllByIdRoomIsNotInAndPersons(ids,1));
+//		bookingStatusRepo.save(new BookingStatus(EBookingStatus.NEW,"Just created booking. Not confirmed, yet"));
+//		bookingStatusRepo.save(new BookingStatus(EBookingStatus.CONFIRMED,"Confirmed booking"));
+//		bookingStatusRepo.save(new BookingStatus(EBookingStatus.ACTIVE,"Active booking means, guests checked in but not checked out"));
+//		bookingStatusRepo.save(new BookingStatus(EBookingStatus.CANCELLED,"Cancelled not used booking"));
+//		bookingStatusRepo.save(new BookingStatus(EBookingStatus.USED,"Guests success fully checked out and booking no longer active"));
 	}
 }

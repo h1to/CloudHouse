@@ -20,7 +20,7 @@ public class Booking {
     private Long idBooking;
 
     @Column
-    private Long users;
+    private String users;
 
     @OneToOne
     @JoinColumn(name = "id_room")
@@ -43,11 +43,9 @@ public class Booking {
     @JoinColumn(name = "id_service")
     private List<AdditionalService> additionalServices;
 
-    @Column(nullable = false)
-    private Boolean confirmed;
-
-    @Column(nullable = false)
-    private Boolean active;
+    @ManyToOne
+    @JoinColumn(name = "idBookingStatus")
+    private BookingStatus status;
 
     @Column(nullable = false)
     private BigDecimal totalPrice;

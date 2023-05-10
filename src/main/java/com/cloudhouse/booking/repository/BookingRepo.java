@@ -43,4 +43,6 @@ public interface BookingRepo extends JpaRepository<Booking,Long> {
                                    @Param("checkOut") LocalDateTime checkOut,
                                    @Param("persons") Integer persons);
 
+
+    List<Booking> findAllByUsers(String user);
 }

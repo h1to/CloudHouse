@@ -13,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Kids {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idKids;
 
     @ManyToOne
