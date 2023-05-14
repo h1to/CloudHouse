@@ -3,6 +3,7 @@ package com.cloudhouse.booking.entity.booking;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -19,7 +20,10 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idBooking;
 
-    @Column
+    @Column(nullable = false)
+    private LocalDateTime creationDate;
+
+    @Column(nullable = false)
     private String users;
 
     @OneToOne
@@ -35,9 +39,13 @@ public class Booking {
     @Column(nullable = false)
     private int adults;
 
-    @OneToMany
+    @ManyToMany
+    @Cascade({org.hibernate.annotations.CascadeType.ALL})
     @JoinColumn(name = "idKids")
     private List<Kids> kids;
+
+    @Column(nullable = false)
+    private Boolean threeTimesMeal;
 
     @ManyToMany
     @JoinColumn(name = "id_service")
@@ -46,6 +54,9 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "idBookingStatus")
     private BookingStatus status;
+
+    @Column(nullable = false)
+    private Boolean payed;
 
     @Column(nullable = false)
     private BigDecimal totalPrice;

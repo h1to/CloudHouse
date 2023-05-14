@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -21,7 +20,10 @@ public class RoomType {
     @Column(nullable = false, length = 50)
     private String typeName;
 
-    @OneToMany
+    @Column(nullable = false)
+    private Integer persons;
+
+    @ManyToMany
     @JoinColumn(name = "idPricePeriod")
     private List<PricePeriod> price;
 

@@ -31,12 +31,8 @@ public class RoomService {
         return roomRepo.findAllByRoomType(roomType);
     }
 
-    public List<Room> getRoomsByTypeAndPersons(RoomType roomType, Integer persons) {
-        return roomRepo.findAllByRoomTypeAndPersons(roomType, persons);
-    }
-
-    public List<Room> getRoomsByPersons(Integer persons) {
-        return roomRepo.findAllByPersons(persons);
+    public List<Room> getRoomsByType(List<RoomType> types) {
+        return roomRepo.findAllByRoomTypeIn(types);
     }
 
     public List<Room> getRoomsExcept(List<Long> bookedRoomIds) {
@@ -45,14 +41,6 @@ public class RoomService {
 
     public List<Room> getRoomsExceptAndRoomType(List<Long> bookedRoomIds, RoomType roomType) {
         return roomRepo.findAllByIdRoomIsNotInAndRoomType(bookedRoomIds, roomType);
-    }
-
-    public List<Room> getRoomsExceptAndPersons(List<Long> bookedRoomIds, Integer persons) {
-        return roomRepo.findAllByIdRoomIsNotInAndPersons(bookedRoomIds, persons);
-    }
-
-    public List<Room> getRoomsExceptByPersonsAndRoomType(List<Long> bookedRoomIds, RoomType roomType, Integer persons) {
-        return roomRepo.findAllByIdRoomIsNotInAndRoomTypeAndPersons(bookedRoomIds, roomType, persons);
     }
 
 }

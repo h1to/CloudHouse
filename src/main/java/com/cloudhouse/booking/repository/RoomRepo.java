@@ -15,17 +15,11 @@ public interface RoomRepo extends JpaRepository<Room,Long> {
 
     List<Room> findAllByRoomType(RoomType roomType);
 
-    List<Room> findAllByRoomTypeAndPersons(RoomType roomType, Integer persons);
-
-    List<Room> findAllByPersons(Integer persnons);
+    List<Room> findAllByRoomTypeIn(List<RoomType> roomTypes);
 
     List<Room> findAllByIdRoomIsNotIn(List<Long> bookedRoomIds);
 
     List<Room> findAllByIdRoomIsNotInAndRoomType(List<Long> bookedRoomIds, RoomType roomType);
 
-    List<Room> findAllByIdRoomIsNotInAndPersons(List<Long> bookedRoomIds, Integer persons);
-
-
-    List<Room> findAllByIdRoomIsNotInAndRoomTypeAndPersons(List<Long> bookedRoomIds, RoomType roomType, Integer persons);
 
 }

@@ -29,9 +29,6 @@ public class Room {
     private RoomType roomType;
 
     @Column(nullable = false)
-    private Integer persons;
-
-    @Column(nullable = false)
     private Boolean clean;
 
     @Column(nullable = false)

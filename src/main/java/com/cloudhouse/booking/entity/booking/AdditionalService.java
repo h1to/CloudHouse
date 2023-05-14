@@ -27,6 +27,9 @@ public class AdditionalService {
     private BigDecimal price;
 
     @Column(nullable = false)
+    private BigDecimal kidsPrice;
+
+    @Column(nullable = false)
     private Boolean payed;
 
 }

@@ -3,7 +3,6 @@ package com.cloudhouse.booking.controller;
 import ch.qos.logback.classic.Logger;
 import com.cloudhouse.booking.entity.Response;
 import com.cloudhouse.booking.entity.booking.Booking;
-import com.cloudhouse.booking.entity.booking.Room;
 import com.cloudhouse.booking.service.client.BookingService;
 import com.cloudhouse.booking.service.client.RoomService;
 import org.keycloak.KeycloakPrincipal;
@@ -20,8 +19,10 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.cloudhouse.booking.config.StaticDataLoader.getUserId;
+
 @RestController
-@RequestMapping("booking")
+@RequestMapping("")
 public class BookingController {
 
     private RoomService roomService;
@@ -36,16 +37,21 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    @RolesAllowed({"admin","manager","guest"})
-    @PostMapping("create")
-    public Response<Booking> createBooking(@RequestBody Booking booking) {
-        System.out.println(booking);
-        return bookingService.createBooking(booking);
+
+    @RolesAllowed({"admin","manager"})
+    @GetMapping("all")
+    public Response<List<Booking>> getAllBookings() {
+        Response<List<Booking>> response = new Response<>();
+
+        response.setData(bookingService.getAllBookings());
+        response.setStatusCode(0);
+        response.setMsg("Success");
+        return response;
     }
 
     @RolesAllowed({"admin","manager","guest"})
-    @GetMapping
-    public Response<List<Booking>> getBooking() {
+    @GetMapping("all/user")
+    public Response<List<Booking>> getBookingsByUser() {
         Response<List<Booking>> response = new Response<>();
 
         KeycloakAuthenticationToken authentication =
@@ -64,6 +70,40 @@ public class BookingController {
         response.setMsg("Success");
         return response;
     }
+
+    @RolesAllowed({"admin","manager","guest"})
+    @PostMapping("create")
+    public Response<Booking> createBooking(@RequestBody Booking booking) {
+        return bookingService.createBooking(booking);
+    }
+
+    @RolesAllowed({"admin","manager","guest"})
+    @PutMapping("update")
+    public Response<Booking> updateBooking(@RequestBody Booking booking) {
+        return bookingService.updateBooking(booking);
+    }
+
+    @RolesAllowed({"admin","manager","guest"})
+    @PutMapping("cancel/{id}")
+    public Response<Booking> cancelBooking(@PathVariable("id") Long bookingID) {
+        return bookingService.cancelBooking(bookingID);
+    }
+
+    @RolesAllowed({"admin","manager"})
+    @DeleteMapping("delete/{bookingID}")
+    public Response deleteBooking(@PathVariable("bookingID") Long bookingID) {
+        bookingService.deleteBooking(bookingID);
+        Response response = new Response();
+        response.setStatusCode(0);
+        response.setMsg("Success");
+        return response;
+    }
+
+
+
+
+
+
 
     @RolesAllowed({"admin","manager","guest"})
     @GetMapping(path = "/users")
