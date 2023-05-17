@@ -23,7 +23,7 @@ public class RoomType {
     @Column(nullable = false)
     private Integer persons;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "idPricePeriod")
     private List<PricePeriod> price;
 

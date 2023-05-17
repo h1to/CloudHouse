@@ -16,7 +16,7 @@ public class PaymentStatus {
     @Id
     private Long idPaymentStatus;
 
-    private EStatus status;
+    private EPaymentStatus status;
 
     @Column(length = 200)
     private String description;

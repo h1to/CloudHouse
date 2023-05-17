@@ -11,6 +11,6 @@ public interface RoomTypeRepo extends JpaRepository<RoomType,Long> {
 
     RoomType findByIdType(Long id);
 
-    List<RoomType> findAllByPersonsGreaterThanEqual(Integer persons);
+    List<RoomType> findAllByPersonsIsGreaterThanEqual(Integer persons);
 
 }

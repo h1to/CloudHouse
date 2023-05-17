@@ -1,6 +1,7 @@
 package com.cloudhouse.booking.controller;
 
 import ch.qos.logback.classic.Logger;
+import com.cloudhouse.booking.entity.Response;
 import com.cloudhouse.booking.entity.booking.Room;
 import com.cloudhouse.booking.service.client.BookingService;
 import org.slf4j.LoggerFactory;
@@ -28,25 +29,33 @@ public class AvailabilityController {
     }
 
     @GetMapping("rooms")
-    public List<Room> findAvailableRooms(@RequestParam(value = "checkIn")
+    public Response<List<Room>> findAvailableRooms(@RequestParam(value = "checkIn")
                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                          LocalDateTime checkIn,
-                                         @RequestParam(value = "checkOut")
+                                                  @RequestParam(value = "checkOut")
                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                          LocalDateTime checkOut,
-                                         @RequestParam(value = "roomType", required = false) Long roomType,
-                                         @RequestParam(value = "persons", required = false) Integer persons) {
+                                                  @RequestParam(value = "roomType", required = false) Long roomType,
+                                                  @RequestParam(value = "persons", required = false) Integer persons) {
+
+        Response<List<Room>> response = new Response<>();
+        response.setStatusCode(0);
+        response.setMsg("Success");
 
         if (roomType == null && persons == null) {
-            return bookingService.getAvailableRooms(checkIn,checkOut);
+            response.setData(bookingService.getAvailableRooms(checkIn,checkOut));
+            return response;
         }
         else if (roomType != null && persons == null) {
-            return bookingService.getAvailableRooms(checkIn, checkOut, roomType);
+            response.setData(bookingService.getAvailableRooms(checkIn, checkOut, roomType));
+            return response;
         }
         else if (roomType == null && persons != null) {
-            return bookingService.getAvailableRooms(checkIn, checkOut, persons);
+            response.setData(bookingService.getAvailableRooms(checkIn, checkOut, persons));
+            return response;
         }
-        return bookingService.getAvailableRooms(checkIn, checkOut, roomType, persons);
+        response.setData(bookingService.getAvailableRooms(checkIn, checkOut, roomType, persons));
+        return response;
 
     }
 

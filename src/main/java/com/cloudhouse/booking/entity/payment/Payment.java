@@ -31,13 +31,11 @@ public class Payment {
     @Column(name = "date", nullable = false, updatable = false)
     private Date dateTime;
 
-    @ManyToOne
-    @JoinColumn(name = "id_payment_type", nullable = false)
-    private PaymentType paymentType;
+    @Column(nullable = false)
+    private EPaymentType paymentType;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private PaymentStatus status;
+    @Column(nullable = false)
+    private EPaymentStatus status;
 
 }
 

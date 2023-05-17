@@ -1,12 +1,11 @@
 package com.cloudhouse.booking.service.client;
 
-import com.cloudhouse.booking.entity.booking.AdditionalService;
-import com.cloudhouse.booking.entity.booking.Booking;
-import com.cloudhouse.booking.entity.booking.PricePeriod;
-import com.cloudhouse.booking.entity.booking.RoomType;
+import ch.qos.logback.classic.Logger;
+import com.cloudhouse.booking.entity.booking.*;
 import com.cloudhouse.booking.repository.AddServiceRepo;
 import com.cloudhouse.booking.repository.RoomTypeRepo;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,18 +20,27 @@ public class RoomTypeService {
 
     private AddServiceRepo addServiceRepo;
 
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(RoomTypeService.class);
+
     @Autowired
     public RoomTypeService(RoomTypeRepo roomTypeRepo, AddServiceRepo addServiceRepo) {
         this.roomTypeRepo = roomTypeRepo;
         this.addServiceRepo = addServiceRepo;
     }
 
+    @CircuitBreaker(name = "bookingService")
+    public List<RoomType> findAll() {
+        return roomTypeRepo.findAll();
+    }
+
+    @CircuitBreaker(name = "bookingService")
     public RoomType findRoomTypeById(Long id) {
         return roomTypeRepo.findByIdType(id);
     }
 
+    @CircuitBreaker(name = "bookingService")
     public List<RoomType> findAllByPersons(Integer persons) {
-        return roomTypeRepo.findAllByPersonsGreaterThanEqual(persons);
+        return roomTypeRepo.findAllByPersonsIsGreaterThanEqual(persons);
     }
 
     @CircuitBreaker(name = "bookingService")
@@ -40,23 +48,11 @@ public class RoomTypeService {
         List<PricePeriod> pricePeriods = roomTypeRepo.findByIdType(booking.getRoom().getRoomType().getIdType()).getPrice();
         BigDecimal price = new BigDecimal(0);
 
-        if (booking.getThreeTimesMeal()) {
-            AdditionalService meals = addServiceRepo.findByIdService(1L);
-            price = price.add(meals.getPrice().multiply(
-                    BigDecimal.valueOf(
-                            ChronoUnit.DAYS.between(booking.getCheckIn(),booking.getCheckOut()))));
-
-            if (booking.getKids() != null && !booking.getKids().isEmpty()) {
-                price = price.add(meals.getKidsPrice().multiply(
-                        BigDecimal.valueOf(
-                                ChronoUnit.DAYS.between(booking.getCheckIn(),booking.getCheckOut()))));
-            }
-        }
-
         PricePeriod first = new PricePeriod();
         PricePeriod second = new PricePeriod();
         PricePeriod middle = new PricePeriod();
         for (int i = 0; i < pricePeriods.size(); i++) {
+            logger.info("In one period calculation...");
             if (pricePeriods.get(i).getStartDate().isBefore(booking.getCheckIn()) && pricePeriods.get(i).getEndDate().isAfter(booking.getCheckIn())) {
                 first = pricePeriods.get(i);
                 if (pricePeriods.get(i).getStartDate().isBefore(booking.getCheckOut()) && pricePeriods.get(i).getEndDate().isAfter(booking.getCheckOut())) {
@@ -64,6 +60,7 @@ public class RoomTypeService {
                             pricePeriods.get(i).getPrice().multiply(
                                     BigDecimal.valueOf(
                                             ChronoUnit.DAYS.between(booking.getCheckIn(),booking.getCheckOut()))));
+                    logger.info("Price for living for 2 adults: " + price);
 
                     return price;
                 }
@@ -75,6 +72,9 @@ public class RoomTypeService {
                 middle = pricePeriods.get(i);
             }
         }
+
+        logger.info("First period: " + first);
+        logger.info("Second period: " + second);
 
         price = price.add(
                 first.getPrice().multiply(
@@ -100,6 +100,8 @@ public class RoomTypeService {
                     )
             );
         }
+
+        logger.info("Price for living for 2 adults: " + price);
         return price;
     }
 

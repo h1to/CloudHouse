@@ -1,7 +1,7 @@
 package com.cloudhouse.booking.repository;
 
 import com.cloudhouse.booking.entity.booking.Booking;
-import com.cloudhouse.booking.entity.booking.BookingStatus;
+import com.cloudhouse.booking.entity.booking.EBookingStatus;
 import com.cloudhouse.booking.entity.booking.Room;
 import feign.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,8 +47,13 @@ public interface BookingRepo extends JpaRepository<Booking,Long> {
 //                                   @Param("persons") Integer persons);
 
 
-    List<Booking> findAllByUsers(String user);
+    List<Booking> findAllByUserId(String user);
 
-    List<Booking> findAllByStatusNotAndCheckInAfter(BookingStatus status, LocalDateTime fromDate);
+    List<Booking> findAllByStatusNotAndCheckInAfter(EBookingStatus status, LocalDateTime fromDate);
+
+    @Query(value = "select * from booking where check_in = :date", nativeQuery = true)
+    List<Booking> findAllByCheckIn(@Param("date") LocalDateTime date);
+
+    List<Booking> findAllByCheckOut(LocalDateTime date);
 
 }

@@ -24,7 +24,7 @@ public class Booking {
     private LocalDateTime creationDate;
 
     @Column(nullable = false)
-    private String users;
+    private String userId;
 
     @OneToOne
     @JoinColumn(name = "id_room")
@@ -51,9 +51,8 @@ public class Booking {
     @JoinColumn(name = "id_service")
     private List<AdditionalService> additionalServices;
 
-    @ManyToOne
-    @JoinColumn(name = "idBookingStatus")
-    private BookingStatus status;
+    @Column(nullable = false)
+    private EBookingStatus status;
 
     @Column(nullable = false)
     private Boolean payed;

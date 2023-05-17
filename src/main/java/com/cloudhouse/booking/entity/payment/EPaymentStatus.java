@@ -1,6 +1,6 @@
 package com.cloudhouse.booking.entity.payment;
 
-public enum EStatus {
+public enum EPaymentStatus {
 
     CANCELLED("CANCELLED"),
     PENDING("PENDING"),
@@ -8,7 +8,7 @@ public enum EStatus {
 
     private String title;
 
-    EStatus(String title) {
+    EPaymentStatus(String title) {
         this.title = title;
     }
 }

@@ -19,8 +19,6 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.cloudhouse.booking.config.StaticDataLoader.getUserId;
-
 @RestController
 @RequestMapping("")
 public class BookingController {
@@ -63,7 +61,7 @@ public class BookingController {
             KeycloakPrincipal<KeycloakSecurityContext> kPrincipal = (KeycloakPrincipal<KeycloakSecurityContext>) principal;
 
             AccessToken token = kPrincipal.getKeycloakSecurityContext().getToken();
-            response.setData(bookingService.getUsersBookings(token.getEmail()));
+            response.setData(bookingService.getUsersBookings(token.getSubject()));
         }
 
         response.setStatusCode(0);
@@ -99,42 +97,51 @@ public class BookingController {
         return response;
     }
 
-
-
-
-
-
-
-    @RolesAllowed({"admin","manager","guest"})
-    @GetMapping(path = "/users")
-    public String getUserInfo() {
-
-        KeycloakAuthenticationToken authentication =
-                (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-
-        Principal principal = authentication.getAccount().getPrincipal();
-
-        String userIdByToken = "";
-
-        if (principal instanceof KeycloakPrincipal) {
-            KeycloakPrincipal<KeycloakSecurityContext> kPrincipal = (KeycloakPrincipal<KeycloakSecurityContext>) principal;
-
-            AccessToken token = kPrincipal.getKeycloakSecurityContext().getToken();
-
-            if (token == null) {
-                System.out.println("NULL");
-                return null;
-            }
-            userIdByToken = token.getEmail();
-            System.out.println("ID: " + token.getSubject() + ", name: " + token.getName() + ", emailVerified" + token.getEmailVerified());
-        }
-
-        return userIdByToken;
+    @GetMapping("check-in/today")
+    public Response<List<Booking>> getCheckInToday() {
+        return bookingService.getCheckInToday();
     }
 
-    @GetMapping("date")
-    public LocalDateTime getDate() {
-        return LocalDateTime.now();
+    @GetMapping("check-out/today")
+    public Response<List<Booking>> getCheckOutToday() {
+        return bookingService.getCheckOutToday();
     }
+
+    @PutMapping("check-in/{idBooking}")
+    public Response<Booking> checkIn(@PathVariable Long idBooking) {
+        return bookingService.checkIn(idBooking);
+    }
+
+    @PutMapping("check-out/{idBooking}")
+    public Response<Booking> checkOut(@PathVariable Long idBooking) {
+        return bookingService.checkOut(idBooking);
+    }
+
+//    @RolesAllowed({"admin","manager","guest"})
+//    @GetMapping(path = "/users")
+//    public String getUserInfo() {
+//
+//        KeycloakAuthenticationToken authentication =
+//                (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+//
+//        Principal principal = authentication.getAccount().getPrincipal();
+//
+//        String userIdByToken = "";
+//
+//        if (principal instanceof KeycloakPrincipal) {
+//            KeycloakPrincipal<KeycloakSecurityContext> kPrincipal = (KeycloakPrincipal<KeycloakSecurityContext>) principal;
+//
+//            AccessToken token = kPrincipal.getKeycloakSecurityContext().getToken();
+//
+//            if (token == null) {
+//                System.out.println("NULL");
+//                return null;
+//            }
+//            userIdByToken = token.getEmail();
+//            System.out.println("ID: " + token.getSubject() + ", name: " + token.getName() + ", emailVerified" + token.getEmailVerified());
+//        }
+//
+//        return userIdByToken;
+//    }
 
 }
